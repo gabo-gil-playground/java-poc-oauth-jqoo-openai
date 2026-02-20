@@ -1,0 +1,47 @@
+server:
+  port: 9025
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 8 # Si se usa Tomcat (MVC), prioriza pocos hilos platform con virtual threads gestionados por Spring
+
+#management:
+#  endpoints:
+#    enabled-by-default: false
+#  endpoint:
+#    health:
+#      enabled: true
+#  health:
+#    probes:
+#      enabled: true
+
+logging:
+  level:
+    root: ${APP_LOG_LEVEL:INFO}
+    com.example.poc: ${APP_LOG_LEVEL:DEBUG}
+
+spring:
+  application:
+    name: java-poc-oauth-jqoo-openai
+  threads:
+    virtual-enabled: true # Habilitar Virtual Threads (Java 21+)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9025/.well-known/jwks.json
+    #  main:
+    #    lazy-initialization: true # Inicialización perezosa para reducir huella de memoria al arranque
+    #  autoconfigure:
+    # Mantener autoconfiguración mínima por defecto; ajusta exclusiones si sabes que no usarás ciertos módulos.
+    # exclude: [ ]
+
+
+
+# Placeholders de configuración; reemplaza con tus valores reales cuando los necesites
+# spring.security.oauth2.resourceserver.jwt.issuer-uri: https://issuer.example.com
+# spring.security.oauth2.authorizationserver.enabled: true
+# spring.ai.openai.api-key: ${OPENAI_API_KEY:}
+# spring.datasource.urls: jdbc:postgresql://localhost:5432/app
+# spring.datasource.username: app
+# spring.datasource.password: app

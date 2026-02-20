@@ -1,0 +1,109 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'nu.studer.jooq' version '9.0'
+}
+
+group = 'com.example.poc'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springAiVersion', "2.0.0-M2")
+}
+
+dependencies {
+    // Spring Boot core
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // Web (MVC) and WebFlux (WebClient asíncrono)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Seguridad: OAuth2 Resource Server y Authorization Server
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'com.nimbusds:nimbus-jose-jwt'
+
+    // OpenAI (Spring AI)
+    // implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+
+/*
+    // Persistencia: JPA, MyBatis y jOOQ (runtime/DSL)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+    implementation 'org.jooq:jooq'
+*/
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Test (unit + integration)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// jOOQ (config mínima placeholder; ajustar según tu BBDD y flujo de generación)
+/*
+jooq {
+    version = '3.19.10'
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    // Placeholder; configura tu URL/driver/credenciales si vas a generar código
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://localhost:5432/app'
+                    user = 'app'
+                    password = 'app'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        // include/exclude según necesites
+                        inputSchema = 'public'
+                    }
+                    generate {
+                        pojos = true
+                        daos = true
+                    }
+                    target {
+                        packageName = 'com.example.poc.jooq'
+                        directory = 'build/generated-src/jooq/main'
+                    }
+                }
+            }
+        }
+    }
+}*/
