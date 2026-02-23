@@ -1,46 +1,73 @@
 package com.example.poc.controller;
 
 import com.example.poc.constant.Constants;
-import com.example.poc.dto.BlogBriefRequest;
-import com.example.poc.dto.BlogBriefResponse;
+import com.example.poc.dto.BlogSummarizeRequest;
+import com.example.poc.dto.BlogSummarizeResponse;
+import com.example.poc.dto.BlogSummarizeRow;
+import com.example.poc.service.BlogSummarizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Development-only controller that issues signed JWTs for local testing.
- * <p>
- * Protect with profile "dev" so it isn't available in non-dev environments.
- * The endpoint returns a JSON object similar to an OAuth2 token response.
- * <p>
- * NOTE: For production, tokens should be issued by a proper Authorization Server.
+ * Blog controller.
  */
 @RestController
 @RequestMapping(Constants.API_BLOG_PATH)
 @Slf4j
 public class BlogController {
 
-    /**
-     * Issue an access token for POC / local testing.
-     * <p>
-     * Example request body:
-     * { "subject": "client1", "scopes": "read write" }
-     * <p>
-     * Response:
-     * { "access_token": "...", "token_type": "bearer", "expires_in": 3600 }
-     */
-    @GetMapping(value = Constants.API_BLOG_BRIEF_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BlogBriefResponse> generateBrief(@AuthenticationPrincipal Jwt jwt, @RequestBody List<BlogBriefRequest> request) throws Exception {
-        log.info("generateBrief - blog brief for urls: {}", request);
+    private final BlogSummarizeService blogSummarizeService;
 
-        return ResponseEntity.ok(new BlogBriefResponse(request, "to be implemented"));
+    /**
+     * Constructor
+     *
+     * @param blogSummarizeService {@link BlogSummarizeService}
+     */
+    public BlogController(final BlogSummarizeService blogSummarizeService) {
+        this.blogSummarizeService = blogSummarizeService;
+    }
+
+    /**
+     * Returns blog summarize based on provided blog urls.
+     *
+     * @param jwt     the principal authenticator
+     * @param request the {@link List<BlogSummarizeRequest>} list of blog urls to generate the summarize
+     * @return {@link ResponseEntity<BlogSummarizeResponse>}
+     */
+    @PostMapping(value = Constants.API_BLOG_SUMMARIZE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BlogSummarizeResponse> createSummarize(@AuthenticationPrincipal Jwt jwt, @RequestBody List<BlogSummarizeRequest> request) {
+        log.info("createSummarize - start");
+        log.info("createSummarize - blog summarize for user: {}", jwt.getSubject());
+
+        BlogSummarizeResponse blogSummarizeResponse = blogSummarizeService.createBlogSummarize(jwt.getSubject(), request);
+
+        log.info("createSummarize - done");
+
+        return ResponseEntity.ok(blogSummarizeResponse);
+    }
+
+
+    /**
+     * Returns blog summarize list based on login user.
+     *
+     * @param jwt the principal authenticator
+     * @return {@link ResponseEntity<List<BlogSummarizeRow>>}
+     */
+    @GetMapping(value = Constants.API_BLOG_SUMMARIZE_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BlogSummarizeRow>> getSummarizeList(@AuthenticationPrincipal Jwt jwt) {
+        log.info("getSummarizeList - start");
+        log.info("getSummarizeList - blog summarize for user: {}", jwt.getSubject());
+
+        List<BlogSummarizeRow> blogSummarizeRows = blogSummarizeService.getBlogSummarizeList(jwt.getSubject());
+
+        log.info("getSummarizeList - done");
+
+        return ResponseEntity.ok(blogSummarizeRows);
     }
 }

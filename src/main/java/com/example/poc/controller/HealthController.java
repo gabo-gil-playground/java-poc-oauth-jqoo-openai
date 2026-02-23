@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class HealthController {
 
     /**
-     * Retrieves application health check status message
+     * Returns application health check status message
      *
      * @return {@link ResponseEntity<Object>}
      */

@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyPair;
@@ -12,17 +13,23 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
 /**
- * Service that generates an ephemeral RSA keypair at startup and exposes a JWKSet object.
- * <p>
- * This is intentionally simple for a POC: keys are generated in-memory and remain valid
+ * Generates an ephemeral RSA keypair at startup and exposes a JWKSet object.
+ * IMPORTANT: this is intentionally simple for a POC: keys are generated in-memory and remain valid
  * while the JVM runs. For production, use a protected keystore or external IdP.
  */
+@Profile("!uat & !stage & !prod")
 @Service
 @Slf4j
 public final class JwkService {
     private RSAKey rsaJwk;
     private JWKSet jwkSet;
 
+    /**
+     * Post constructor
+     * Set in-memory key pair generator and size
+     *
+     * @throws Exception when if key creation fails
+     */
     @PostConstruct
     public void init() throws Exception {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
@@ -42,14 +49,14 @@ public final class JwkService {
     }
 
     /**
-     * Return the public JWKSet (used by /.well-known/jwks.json).
+     * Returns the public {@link JWKSet} (used by /.well-known/jwks.json).
      */
     public JWKSet getJwkSet() {
         return jwkSet;
     }
 
     /**
-     * Returns the private RSAKey for signing tokens (POC/test use only).
+     * Returns the private {@link RSAKey} for signing tokens (POC/test use only).
      */
     public RSAKey getRsaJwk() {
         return rsaJwk;

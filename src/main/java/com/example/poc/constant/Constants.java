@@ -10,7 +10,7 @@ public interface Constants {
     String API_HEALTH_PATH = "/health";
     String API_MAIN_PATH = "/api/v1";
     String API_BLOG_PATH = API_MAIN_PATH + "/blog";
-    String API_BLOG_BRIEF_PATH = "/brief";
+    String API_BLOG_SUMMARIZE_PATH = "/summarize";
     String API_WELL_KNOWN_JSON_PATH = "/.well-known/jwks.json";
     String API_TOKEN_GENERATE_PATH = "/token/generate";
 

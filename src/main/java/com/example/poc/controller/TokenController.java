@@ -18,17 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
  * Protect with profile "dev" so it isn't available in non-dev environments.
  * The endpoint returns a JSON object similar to an OAuth2 token response.
  * <p>
- * NOTE: For production, tokens should be issued by a proper Authorization Server.
+ * IMPORTANT: provided just for local testing and POC purposes only. For production, tokens should be issued by a
+ * proper Authorization Server.
  */
-@Profile("!uat & !staging & !prod")
+@Profile("!uat & !stage & !prod")
 @RestController
 @Slf4j
 public class TokenController {
     private final JwtTokenService jwtTokenService;
 
     /**
+     * Constructor
      *
-     * @param jwtTokenService
+     * @param jwtTokenService the {@link JwtTokenService}
      */
     public TokenController(JwtTokenService jwtTokenService) {
         this.jwtTokenService = jwtTokenService;
@@ -39,9 +41,11 @@ public class TokenController {
      * <p>
      * Example request body:
      * { "subject": "client1", "scopes": "read write" }
-     * <p>
      * Response:
      * { "access_token": "...", "token_type": "bearer", "expires_in": 3600 }
+     *
+     * @param request the {@link TokenRequest} to create the JWT token
+     * @return {@link Object}
      */
     @PostMapping(value = Constants.API_TOKEN_GENERATE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Object generateToken(@RequestBody TokenRequest request) {

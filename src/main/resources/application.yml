@@ -3,17 +3,7 @@ server:
   shutdown: graceful
   tomcat:
     threads:
-      max: 8 # Si se usa Tomcat (MVC), prioriza pocos hilos platform con virtual threads gestionados por Spring
-
-#management:
-#  endpoints:
-#    enabled-by-default: false
-#  endpoint:
-#    health:
-#      enabled: true
-#  health:
-#    probes:
-#      enabled: true
+      max: 8 # with Tomcat server provides priority with virtual threads managed por spring
 
 logging:
   level:
@@ -24,24 +14,25 @@ spring:
   application:
     name: java-poc-oauth-jqoo-openai
   threads:
-    virtual-enabled: true # Habilitar Virtual Threads (Java 21+)
+    virtual-enabled: true # virtual threads (Java 21+) enabled
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9025/.well-known/jwks.json
-    #  main:
-    #    lazy-initialization: true # Inicialización perezosa para reducir huella de memoria al arranque
-    #  autoconfigure:
-    # Mantener autoconfiguración mínima por defecto; ajusta exclusiones si sabes que no usarás ciertos módulos.
-    # exclude: [ ]
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:openai-dummy-key}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${POSTGRES_USER:user}
+    password: ${POSTGRES_PASSWORD:secret}
 
+jooq:
+  sql-dialect: postgres
 
-
-# Placeholders de configuración; reemplaza con tus valores reales cuando los necesites
-# spring.security.oauth2.resourceserver.jwt.issuer-uri: https://issuer.example.com
-# spring.security.oauth2.authorizationserver.enabled: true
-# spring.ai.openai.api-key: ${OPENAI_API_KEY:}
-# spring.datasource.urls: jdbc:postgresql://localhost:5432/app
-# spring.datasource.username: app
-# spring.datasource.password: app
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
