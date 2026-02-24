@@ -69,10 +69,6 @@ dependencyManagement {
     }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
 def postgresUrl = providers.environmentVariable('POSTGRES_URL')
 def postgresUser = providers.environmentVariable('POSTGRES_USER')
 def postgresPwd = providers.environmentVariable('POSTGRES_PASSWORD')
@@ -101,11 +97,42 @@ jooq {
                         daos = true
                     }
                     target {
-                        packageName = 'com.example.poc.jooq'
-                        directory = 'build/generated-src/jooq/main'
+                        packageName = 'com.example.poc.jooq.generated'
+                        directory = 'src/main/java'
                     }
                 }
             }
         }
     }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'src/main/java/com/example/poc/jooq/generated'
+        }
+    }
+}
+
+// ./gradlew generateJooq -PpostgresUser=... -PpostgresPassword=...
+tasks.named('compileJava') {
+    dependsOn.removeIf {
+        it.dependsOn.removeIf { dep ->
+            dep.toString().contains("generateJooq")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    mustRunAfter tasks.matching { it.name.contains('generateJooq') }
+}
+
+tasks.register('cleanJooq') {
+    doLast {
+        delete 'src/main/java/com/example/poc/jooq'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }

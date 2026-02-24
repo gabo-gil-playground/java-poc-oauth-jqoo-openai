@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.poc.jooq.Tables.BLOG_REQUEST;
+import static com.example.poc.jooq.generated.Tables.BLOG_REQUEST;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
