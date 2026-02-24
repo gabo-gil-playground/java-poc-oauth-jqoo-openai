@@ -8,7 +8,6 @@ import com.example.poc.jooq.generated.tables.BlogRequest;
 import com.example.poc.jooq.generated.tables.BlogRequestContent;
 import com.example.poc.jooq.generated.tables.records.BlogRequestContentRecord;
 import com.example.poc.jooq.generated.tables.records.BlogRequestRecord;
-
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -20,19 +19,19 @@ import org.jooq.impl.Internal;
  * A class modelling foreign key relationships and constraints of tables in
  * public.
  */
-@SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
+@SuppressWarnings({"all", "unchecked", "rawtypes", "this-escape"})
 public class Keys {
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<BlogRequestRecord> BLOG_REQUEST_PKEY = Internal.createUniqueKey(BlogRequest.BLOG_REQUEST, DSL.name("blog_request_pkey"), new TableField[] { BlogRequest.BLOG_REQUEST.BLOG_REQUEST_ID }, true);
-    public static final UniqueKey<BlogRequestContentRecord> BLOG_REQUEST_CONTENT_PKEY = Internal.createUniqueKey(BlogRequestContent.BLOG_REQUEST_CONTENT, DSL.name("blog_request_content_pkey"), new TableField[] { BlogRequestContent.BLOG_REQUEST_CONTENT.BLOG_REQUEST_CONTENT_ID }, true);
+    public static final UniqueKey<BlogRequestRecord> BLOG_REQUEST_PKEY = Internal.createUniqueKey(BlogRequest.BLOG_REQUEST, DSL.name("blog_request_pkey"), new TableField[]{BlogRequest.BLOG_REQUEST.BLOG_REQUEST_ID}, true);
+    public static final UniqueKey<BlogRequestContentRecord> BLOG_REQUEST_CONTENT_PKEY = Internal.createUniqueKey(BlogRequestContent.BLOG_REQUEST_CONTENT, DSL.name("blog_request_content_pkey"), new TableField[]{BlogRequestContent.BLOG_REQUEST_CONTENT.BLOG_REQUEST_CONTENT_ID}, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<BlogRequestContentRecord, BlogRequestRecord> BLOG_REQUEST_CONTENT__BLOG_REQUEST_CONTENT_BLOG_REQUEST_ID_FKEY = Internal.createForeignKey(BlogRequestContent.BLOG_REQUEST_CONTENT, DSL.name("blog_request_content_blog_request_id_fkey"), new TableField[] { BlogRequestContent.BLOG_REQUEST_CONTENT.BLOG_REQUEST_ID }, Keys.BLOG_REQUEST_PKEY, new TableField[] { BlogRequest.BLOG_REQUEST.BLOG_REQUEST_ID }, true);
+    public static final ForeignKey<BlogRequestContentRecord, BlogRequestRecord> BLOG_REQUEST_CONTENT__BLOG_REQUEST_CONTENT_BLOG_REQUEST_ID_FKEY = Internal.createForeignKey(BlogRequestContent.BLOG_REQUEST_CONTENT, DSL.name("blog_request_content_blog_request_id_fkey"), new TableField[]{BlogRequestContent.BLOG_REQUEST_CONTENT.BLOG_REQUEST_ID}, Keys.BLOG_REQUEST_PKEY, new TableField[]{BlogRequest.BLOG_REQUEST.BLOG_REQUEST_ID}, true);
 }

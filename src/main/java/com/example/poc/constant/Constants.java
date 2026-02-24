@@ -19,4 +19,10 @@ public interface Constants {
     String OAUTH_SCOPE_READ = "SCOPE_read";
     String OAUTH_TOKEN_TYPE_BEARER = "bearer";
     int OAUTH_TOKEN_EXPIRES_IN = 3600;
+
+    String OPENAI_MODEL = "gpt-4.1-nano";
+    Double OPENAI_TEMPERATURE = 0.2;
+    Integer OPENAI_OUTPUT_MAX_TOKENS = 200;
+    String OPENAI_OUTPUT_EMPTY_RESPONSE = "Empty response";
+    String OPENAI_SYSTEM_PROMPT = "You are a Software Engineer at SME with a strong ability and experience to identify the main points of a concept. Summarize the following text for a senior developer in 2-3 lines. Maintain a technical and concise tone without adding or inventing content.";
 }

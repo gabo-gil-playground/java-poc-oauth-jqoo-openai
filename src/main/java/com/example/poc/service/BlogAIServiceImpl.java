@@ -1,5 +1,6 @@
 package com.example.poc.service;
 
+import com.example.poc.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -20,7 +21,6 @@ import java.util.List;
 public class BlogAIServiceImpl implements BlogAIService {
 
     private final ChatModel chatModel;
-    private final String SYSTEM_PROMPT = "You are a Software Engineer at SME with a strong ability and experience to identify the main points of a concept. Summarize the following text for a senior developer in 2-3 lines. Maintain a technical and concise tone without adding or inventing content."; // TODO GABI USE CONSTANTS
 
     /**
      *
@@ -42,13 +42,13 @@ public class BlogAIServiceImpl implements BlogAIService {
         String text = String.join("\n", textList);
         log.debug("summarizeTextList - text to summarize: {}", text);
 
-        SystemMessage systemMessage = new SystemMessage(SYSTEM_PROMPT);// TODO GABI USE CONSTANTS
+        SystemMessage systemMessage = new SystemMessage(Constants.OPENAI_SYSTEM_PROMPT);
         UserMessage userMessage = new UserMessage(text);
 
         OpenAiChatOptions openAiChatOptions = OpenAiChatOptions.builder()
-            .model("gpt-4.1-nano")// TODO GABI USE CONSTANTS
-            .temperature(0.2)// TODO GABI USE CONSTANTS
-            .maxTokens(200)// TODO GABI USE CONSTANTS
+            .model(Constants.OPENAI_MODEL)
+            .temperature(Constants.OPENAI_TEMPERATURE)
+            .maxTokens(Constants.OPENAI_OUTPUT_MAX_TOKENS)
             .build();
 
         Prompt prompt = Prompt.builder()
@@ -73,12 +73,12 @@ public class BlogAIServiceImpl implements BlogAIService {
     private String getTextFromChatResponse(final ChatResponse chatResponse) {
         try {
             if (!chatResponse.getResult().getOutput().getMessageType().equals(MessageType.ASSISTANT)) {
-                return "Empty response"; // TODO GABI USE CONSTANTS
+                return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE;
             }
 
             return chatResponse.getResult().getOutput().getText();
         } catch (Exception e) {
-            return "Empty response"; // TODO GABI USE CONSTANTS
+            return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE;
         }
     }
 }

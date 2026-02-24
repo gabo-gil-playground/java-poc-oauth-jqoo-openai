@@ -45,10 +45,10 @@ public class TokenController {
      * { "access_token": "...", "token_type": "bearer", "expires_in": 3600 }
      *
      * @param request the {@link TokenRequest} to create the JWT token
-     * @return {@link Object}
+     * @return {@link ResponseEntity<Object>}
      */
     @PostMapping(value = Constants.API_TOKEN_GENERATE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Object generateToken(@RequestBody TokenRequest request) {
+    public ResponseEntity<Object> generateToken(@RequestBody TokenRequest request) {
         log.info("generateToken - new token request for user: {} - scope: {}", request.subject(), request.scopes());
 
         try {
@@ -56,7 +56,7 @@ public class TokenController {
             return ResponseEntity.ok(new TokenResponse(token, Constants.OAUTH_TOKEN_TYPE_BEARER, Constants.OAUTH_TOKEN_EXPIRES_IN));
         } catch (Exception e) {
             log.error("generateToken - generate error: {}", e.getMessage());
-            return ResponseEntity.badRequest();
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }
