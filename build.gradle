@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '4.0.3'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'nu.studer.jooq' version '10.1.1'
+    id 'jacoco'
 }
 
 group = 'com.example.poc'
@@ -26,6 +27,12 @@ repositories {
 
 ext {
     set('springAiVersion', "2.0.0-M2")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
 }
 
 dependencies {
@@ -58,15 +65,8 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    // Test (unit + integration)
+    // test common dependencies (unit + integration)
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
-    }
 }
 
 def postgresUrl = providers.environmentVariable('POSTGRES_URL')
@@ -114,7 +114,6 @@ sourceSets {
     }
 }
 
-// ./gradlew generateJooq -PpostgresUser=... -PpostgresPassword=...
 tasks.named('compileJava') {
     dependsOn.removeIf {
         it.dependsOn.removeIf { dep ->
@@ -135,4 +134,55 @@ tasks.register('cleanJooq') {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// integration test source folders
+sourceSets {
+    testIt {
+        java.srcDirs = ['src/test-it/java']
+        resources.srcDirs = ['src/test-it/resources']
+        // Le damos acceso al código principal y a las clases de test normales
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+// integration test load dependencies
+configurations {
+    testItImplementation.extendsFrom testImplementation
+    testItRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+// integration test task
+tasks.register('integrationTest', Test) {
+    description = 'Integration tests task (test-it folder).'
+    group = 'integration test'
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'com.h2database:h2'
+    }
+
+    testClassesDirs = sourceSets.testIt.output.classesDirs
+    classpath = sourceSets.testIt.runtimeClasspath
+
+    useJUnitPlatform()
+
+    shouldRunAfter tasks.named('test')
+}
+
+// all tests task (unit tests + integration tests)
+tasks.register('allTests', Test) {
+    dependsOn tasks.named('test'), tasks.named('integrationTest')
+}
+
+// jacoco plugin task
+tasks.named('jacocoTestReport') {
+    dependsOn tasks.named('test'), tasks.named('integrationTest')
+
+    executionData tasks.withType(Test).findAll { it.state.executed }
+
+    classDirectories.setFrom(sourceSets.main.output)
+    sourceDirectories.setFrom(sourceSets.main.allSource)
 }
