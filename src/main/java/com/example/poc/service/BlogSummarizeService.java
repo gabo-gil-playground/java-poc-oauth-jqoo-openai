@@ -27,6 +27,13 @@ public class BlogSummarizeService {
     private final BlogRequestContentMapper blogRequestContentMapper;
     private final DSLContext dslContext;
 
+    /**
+     *
+     * @param blogAIService
+     * @param blogRequestMapper
+     * @param blogRequestContentMapper
+     * @param dslContext
+     */
     public BlogSummarizeService(final BlogAIServiceImpl blogAIService, final BlogRequestMapper blogRequestMapper, final BlogRequestContentMapper blogRequestContentMapper, final DSLContext dslContext) {
         this.blogAIService = blogAIService;
         this.blogRequestMapper = blogRequestMapper;
@@ -63,6 +70,7 @@ public class BlogSummarizeService {
         List<BlogSummarizeRow> blogSummarizeRows = this.dslContext
             .select(field(BLOG_REQUEST.BLOG_REQUEST_ID.getName()), field(BLOG_REQUEST.SUMMARIZE.getName()))
             .from(table(BLOG_REQUEST.getName()))
+            .where(BLOG_REQUEST.CREATE_USER.eq(user))
             .fetchInto(BlogSummarizeRow.class);
 
         log.info("getBlogSummarizeList - done");

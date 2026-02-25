@@ -35,77 +35,6 @@ dependencyManagement {
     }
 }
 
-dependencies {
-    // spring-boot core
-    implementation 'org.springframework.boot:spring-boot-starter'
-
-    // spring-boot web (mvc) and webflux (async web-client)
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-    // spring-boot oauth2 security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'com.nimbusds:nimbus-jose-jwt'
-
-    // spring-boot openai (spring AI)
-    implementation 'org.springframework.ai:spring-ai-starter-model-openai:2.0.0-M2'
-
-    // persistence JPA + MyBatis y jOOQ (runtime/DSL)
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jooq'
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
-
-    jooqGenerator 'org.postgresql:postgresql:42.7.10'
-    runtimeOnly 'org.postgresql:postgresql'
-
-    // lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-
-    // test common dependencies (unit + integration)
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-def postgresUrl = providers.environmentVariable('POSTGRES_URL')
-def postgresUser = providers.environmentVariable('POSTGRES_USER')
-def postgresPwd = providers.environmentVariable('POSTGRES_PASSWORD')
-def postgresSchema = providers.environmentVariable('POSTGRES_SCHEMA')
-
-jooq {
-    version = '3.19.30'
-    configurations {
-        main {
-            generationTool {
-                logging = org.jooq.meta.jaxb.Logging.WARN
-                jdbc {
-                    driver = 'org.postgresql.Driver'
-                    url = postgresUrl.getOrElse('jdbc:postgresql://localhost:5432/postgres')
-                    user = postgresUser.getOrElse('user')
-                    password = postgresPwd.getOrElse('secret')
-                }
-                generator {
-                    name = 'org.jooq.codegen.DefaultGenerator'
-                    database {
-                        name = 'org.jooq.meta.postgres.PostgresDatabase'
-                        inputSchema = postgresSchema.getOrElse('public')
-                    }
-                    generate {
-                        pojos = true
-                        daos = true
-                    }
-                    target {
-                        packageName = 'com.example.poc.jooq.generated'
-                        directory = 'src/main/java'
-                    }
-                }
-            }
-        }
-    }
-}
-
 sourceSets {
     main {
         java {
@@ -141,7 +70,7 @@ sourceSets {
     testIt {
         java.srcDirs = ['src/test-it/java']
         resources.srcDirs = ['src/test-it/resources']
-        // Le damos acceso al código principal y a las clases de test normales
+
         compileClasspath += sourceSets.main.output + sourceSets.test.output
         runtimeClasspath += output + compileClasspath
     }
@@ -158,31 +87,106 @@ tasks.register('integrationTest', Test) {
     description = 'Integration tests task (test-it folder).'
     group = 'integration test'
 
-    dependencies {
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'org.springframework.security:spring-security-test'
-        testImplementation 'com.h2database:h2'
-    }
-
     testClassesDirs = sourceSets.testIt.output.classesDirs
     classpath = sourceSets.testIt.runtimeClasspath
 
     useJUnitPlatform()
-
-    shouldRunAfter tasks.named('test')
 }
 
 // all tests task (unit tests + integration tests)
-tasks.register('allTests', Test) {
+tasks.register('allTests') {
     dependsOn tasks.named('test'), tasks.named('integrationTest')
+    integrationTest.mustRunAfter test
 }
 
 // jacoco plugin task
 tasks.named('jacocoTestReport') {
-    dependsOn tasks.named('test'), tasks.named('integrationTest')
+    dependsOn tasks.named('allTests')
 
-    executionData tasks.withType(Test).findAll { it.state.executed }
+    executionData jacocoTestReport.findAll { allTests.state.executed }
 
-    classDirectories.setFrom(sourceSets.main.output)
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: [
+                'com/example/poc/config/**',
+                'com/example/poc/jooq/generated/**'
+        ])
+    }))
+
     sourceDirectories.setFrom(sourceSets.main.allSource)
+}
+
+dependencies {
+    // spring-boot core
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // spring-boot web (mvc) and webflux (async web-client)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // spring-boot oauth2 security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'com.nimbusds:nimbus-jose-jwt'
+
+    // spring-boot openai (spring AI)
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai:2.0.0-M2'
+
+    // persistence JPA + MyBatis y jOOQ (runtime/DSL)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
+
+    jooqGenerator 'org.postgresql:postgresql:42.7.10'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // test common dependencies (unit + integration)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testItImplementation 'org.springframework.security:spring-security-test'
+    testItImplementation 'com.h2database:h2'
+}
+
+def postgresUrl = providers.environmentVariable('POSTGRES_URL')
+def postgresUser = providers.environmentVariable('POSTGRES_USER')
+def postgresPwd = providers.environmentVariable('POSTGRES_PASSWORD')
+def postgresSchema = providers.environmentVariable('POSTGRES_SCHEMA')
+
+if (tasks.getNames().contains("generateJooq")) {
+    jooq {
+        version = '3.19.30'
+        configurations {
+            main {
+                generationTool {
+                    logging = org.jooq.meta.jaxb.Logging.WARN
+                    jdbc {
+                        driver = 'org.postgresql.Driver'
+                        url = postgresUrl.getOrElse('jdbc:postgresql://localhost:5432/postgres')
+                        user = postgresUser.getOrElse('user')
+                        password = postgresPwd.getOrElse('secret')
+                    }
+                    generator {
+                        name = 'org.jooq.codegen.DefaultGenerator'
+                        database {
+                            name = 'org.jooq.meta.postgres.PostgresDatabase'
+                            inputSchema = postgresSchema.getOrElse('public')
+                        }
+                        generate {
+                            pojos = true
+                            daos = true
+                        }
+                        target {
+                            packageName = 'com.example.poc.jooq.generated'
+                            directory = 'src/main/java'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
