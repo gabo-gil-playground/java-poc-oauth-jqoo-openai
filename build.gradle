@@ -149,6 +149,7 @@ dependencies {
     // test common dependencies (unit + integration)
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // integration test exclusive dependencies
     testItImplementation 'org.springframework.security:spring-security-test'
     testItImplementation 'org.xerial:sqlite-jdbc:3.51.2.0'
 }
