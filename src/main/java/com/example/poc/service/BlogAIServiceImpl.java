@@ -74,12 +74,14 @@ public class BlogAIServiceImpl implements BlogAIService {
     private String getTextFromChatResponse(final ChatResponse chatResponse) {
         try {
             if (!chatResponse.getResult().getOutput().getMessageType().equals(MessageType.ASSISTANT)) {
-                return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE;
+                log.error("getTextFromChatResponse - output message type is not assistant");
+                return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE; // just for POC purposes - avoid silent handling for real product
             }
 
             return chatResponse.getResult().getOutput().getText();
         } catch (Exception e) {
-            return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE;
+            log.error("getTextFromChatResponse - get response text error: {:?}", e);
+            return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE; // just for POC purposes - avoid silent handling for real product
         }
     }
 }

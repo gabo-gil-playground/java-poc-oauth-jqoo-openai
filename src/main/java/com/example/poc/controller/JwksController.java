@@ -28,7 +28,7 @@ public final class JwksController {
      *
      * @param jwkService the {@link JwkService} JSON Web Key Set service
      */
-    public JwksController(JwkService jwkService) {
+    public JwksController(final JwkService jwkService) {
         this.jwkService = jwkService;
     }
 

@@ -1,9 +1,6 @@
 server:
   port: 9025
   shutdown: graceful
-  tomcat:
-    threads:
-      max: 8 # with Tomcat server provides priority with virtual threads managed por spring
 
 logging:
   level:

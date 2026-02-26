@@ -38,7 +38,7 @@ public class SecurityConfig {
      */
     @Profile("!uat & !stage & !prod")
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(final HttpSecurity http) {
         http
             .csrf(csrf -> csrf.disable()) // disables CSRF for this POC (evaluate carefully for production)
             .authorizeHttpRequests(authorize -> authorize
@@ -63,7 +63,7 @@ public class SecurityConfig {
      * @return {@link JwtDecoder}
      */
     @Bean
-    public JwtDecoder jwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwkSetUri) {
+    public JwtDecoder jwtDecoder(@Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") final String jwkSetUri) {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
         jwtDecoder.setJwtValidator(JwtValidators.createDefault()); // default validators (exp, nbf, iat checks) are applied.
 

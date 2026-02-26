@@ -1,14 +1,14 @@
 # java-poc-oauth-jooq-openai
 
-Basic Java project skeleton with Gradle, Java 25, and Spring Boot 4, pre-configured with:
+Basic Java project skeleton with Gradle, Java 25, and Spring Boot 4.0.3, pre-configured with:
 
 - Spring Web (MVC) and WebFlux (Asynchronous WebClient)
-- Persistence with JPA, MyBatis, and jOOQ
+- Persistence with MyBatis and jOOQ
 - OAuth2 Security: Resource Server with local JWKS and Token generation (for testing)
-- OpenAI Integration via Spring AI
+- OpenAI Integration via Spring AI (2.0.0-M2)
 - Lombok support
 - Configuration for Virtual Threads, lazy initialization, and graceful shutdown
-- Testing dependencies for unit and integration tests
+- Comprehensive testing suite including Unit and Integration Tests (test-it)
 
 ## Requirements
 
@@ -31,7 +31,6 @@ Basic Java project skeleton with Gradle, Java 25, and Spring Boot 4, pre-configu
 ## Key Dependencies Included
 
 - `org.springframework.boot:spring-boot-starter-web` & `webflux`
-- `org.springframework.boot:spring-boot-starter-data-jpa`
 - `org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1`
 - `org.springframework.boot:spring-boot-starter-jooq` (jOOQ 3.19.30)
 - `org.springframework.boot:spring-boot-starter-oauth2-resource-server`
@@ -47,21 +46,16 @@ The project implements a specific logic for managing blog summaries, combining d
 When a POST request is made to `/api/v1/blog/summarize`:
 
 - **Persistence (MyBatis)**: The application uses **MyBatis** to insert the initial request records into the database.
-  It handles the master record in `BLOG_REQUEST` and multiple entries in `BLOG_REQUEST_CONTENT` using specific mappers (
-  `BlogRequestMapper`, `BlogRequestContentMapper`).
-- **AI Processing (OpenAI)**: The `BlogAIServiceImpl` interacts with **OpenAI** (via Spring AI) to process the blog
-  content. It uses a technical system prompt to generate a concise 2-3 line summary.
-- **Completion (MyBatis)**: Once the summary is received, MyBatis is used again to update the original record with the
-  generated text.
+  It handles the master record in `BLOG_REQUEST` and multiple entries in `BLOG_REQUEST_CONTENT` using specific mappers (`BlogRequestMapper`, `BlogRequestContentMapper`).
+- **AI Processing (OpenAI)**: The `BlogAIServiceImpl` interacts with **OpenAI** (via Spring AI) to process the blog content. It uses a technical system prompt to generate a concise summary.
+- **Completion (MyBatis)**: Once the summary is received, MyBatis is used again to update the original record with the generated text.
 
 ### 2. Reading Process (jOOQ)
 
 When a GET request is made to `/api/v1/blog/summarize`:
 
-- **Data Retrieval (jOOQ)**: The application utilizes **jOOQ**'s DSL to perform a type-safe query against the
-  `BLOG_REQUEST` table.
-- It fetches the `BLOG_REQUEST_ID` and `SUMMARIZE` fields and maps them directly into `BlogSummarizeRow` DTOs using
-  jOOQ's `fetchInto` capabilities.
+- **Data Retrieval (jOOQ)**: The application utilizes **jOOQ**'s DSL to perform a type-safe query against the `BLOG_REQUEST` table.
+- It fetches the `BLOG_REQUEST_ID` and `SUMMARIZE` fields and maps them directly into `BlogSummarizeRow` DTOs using jOOQ's `fetchInto` capabilities.
 
 ## Configuration
 
@@ -83,8 +77,7 @@ spring:
     password: secret
 ```
 
-For jOOQ, a generation configuration is provided in `build.gradle`. Ensure environment variables (`POSTGRES_URL`, etc.)
-are set or use defaults, then run:
+For jOOQ, a generation configuration is provided in `build.gradle`. Ensure environment variables (`POSTGRES_URL`, etc.) are set or use defaults, then run:
 
 ```bash
 ./gradlew generateJooq
@@ -95,6 +88,23 @@ are set or use defaults, then run:
 ```bash
 ./gradlew bootRun
 ```
+
+## Running Tests
+
+The project includes both unit and integration tests:
+
+- **Unit Tests**: Located in `src/test`. Focus on individual component logic.
+  ```bash
+  ./gradlew test
+  ```
+- **Integration Tests (IT)**: Located in `src/test-it`. Verify full flows using an in-memory database (SQLite) and mocked external services.
+  ```bash
+  ./gradlew integrationTest
+  ```
+- **All Tests & Coverage**: Run all tests and generate a JaCoCo report.
+  ```bash
+  ./gradlew allTests jacocoTestReport
+  ```
 
 ## API Endpoints
 
@@ -113,3 +123,10 @@ are set or use defaults, then run:
 ## License
 
 Refer to the `LICENSE` file.
+
+## Contact
+Blog: https://gabogil.com/blog/
+
+Github: https://github.com/gabo-gil-playground
+
+Linkedin: https://www.linkedin.com/in/gabogil/

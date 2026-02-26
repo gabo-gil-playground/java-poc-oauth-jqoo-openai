@@ -32,7 +32,7 @@ public class TokenController {
      *
      * @param jwtTokenService the {@link JwtTokenService}
      */
-    public TokenController(JwtTokenService jwtTokenService) {
+    public TokenController(final JwtTokenService jwtTokenService) {
         this.jwtTokenService = jwtTokenService;
     }
 
@@ -48,7 +48,7 @@ public class TokenController {
      * @return {@link ResponseEntity<Object>}
      */
     @PostMapping(value = Constants.API_TOKEN_GENERATE_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> generateToken(@RequestBody TokenRequest request) {
+    public ResponseEntity<Object> generateToken(@RequestBody final TokenRequest request) {
         log.info("generateToken - new token request for user: {} - scope: {}", request.subject(), request.scopes());
 
         try {

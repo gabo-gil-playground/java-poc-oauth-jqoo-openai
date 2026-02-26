@@ -8,11 +8,11 @@ import com.example.poc.mapper.BlogRequestMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.example.poc.jooq.generated.Tables.BLOG_REQUEST;
-import static org.jooq.impl.DSL.table;
 
 /**
  * Blog summarize service
@@ -21,7 +21,7 @@ import static org.jooq.impl.DSL.table;
 @Slf4j
 public class BlogSummarizeService {
 
-    private final BlogAIServiceImpl blogAIService;
+    private final BlogAIService blogAIService;
     private final BlogRequestMapper blogRequestMapper;
     private final BlogRequestContentMapper blogRequestContentMapper;
     private final DSLContext dslContext;
@@ -29,12 +29,12 @@ public class BlogSummarizeService {
     /**
      * Constructor
      *
-     * @param blogAIService            {@link BlogAIServiceImpl}
+     * @param blogAIService            {@link BlogAIService}
      * @param blogRequestMapper        {@link BlogRequestMapper}
      * @param blogRequestContentMapper {@link BlogRequestContentMapper}
      * @param dslContext               {@link DSLContext}
      */
-    public BlogSummarizeService(final BlogAIServiceImpl blogAIService, final BlogRequestMapper blogRequestMapper, final BlogRequestContentMapper blogRequestContentMapper, final DSLContext dslContext) {
+    public BlogSummarizeService(final BlogAIService blogAIService, final BlogRequestMapper blogRequestMapper, final BlogRequestContentMapper blogRequestContentMapper, final DSLContext dslContext) {
         this.blogAIService = blogAIService;
         this.blogRequestMapper = blogRequestMapper;
         this.blogRequestContentMapper = blogRequestContentMapper;
@@ -48,6 +48,7 @@ public class BlogSummarizeService {
      * @param blogSummarizeRequests the {@link List<BlogSummarizeRequest>} list of texts to summarize
      * @return {@link BlogSummarizeResponse}
      */
+    @Transactional
     public BlogSummarizeResponse createBlogSummarize(final String user, final List<BlogSummarizeRequest> blogSummarizeRequests) {
         log.info("createBlogSummarize - start");
         Long requestId = saveRequest(user, blogSummarizeRequests);
@@ -71,7 +72,7 @@ public class BlogSummarizeService {
 
         List<BlogSummarizeRow> blogSummarizeRows = this.dslContext
             .select(BLOG_REQUEST.BLOG_REQUEST_ID, BLOG_REQUEST.SUMMARIZE)
-            .from(table(BLOG_REQUEST.getName()))
+            .from(BLOG_REQUEST)
             .where(BLOG_REQUEST.CREATE_USER.eq(user))
             .fetchInto(BlogSummarizeRow.class);
 
