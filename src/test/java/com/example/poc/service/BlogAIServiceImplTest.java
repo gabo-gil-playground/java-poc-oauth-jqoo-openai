@@ -23,12 +23,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BlogAIServiceImplTest {
 
+    private static final String MOCK_BLOG_SUMMARIZE = "some-summarize-value";
     @Mock
     private ChatModel chatModel;
-
     private BlogAIServiceImpl blogAIService;
-
-    private static final String MOCK_BLOG_SUMMARIZE = "some-summarize-value";
 
     @BeforeEach
     void setUp() {

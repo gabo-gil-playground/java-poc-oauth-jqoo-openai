@@ -149,7 +149,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     testItImplementation 'org.springframework.security:spring-security-test'
-    testItImplementation 'com.h2database:h2'
+    testItImplementation 'org.xerial:sqlite-jdbc:3.51.2.0'
 }
 
 def postgresUrl = providers.environmentVariable('POSTGRES_URL')

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.example.poc.jooq.generated.Tables.BLOG_REQUEST;
-import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
 /**
@@ -68,7 +67,7 @@ public class BlogSummarizeService {
         log.info("getBlogSummarizeList - start");
 
         List<BlogSummarizeRow> blogSummarizeRows = this.dslContext
-            .select(field(BLOG_REQUEST.BLOG_REQUEST_ID.getName()), field(BLOG_REQUEST.SUMMARIZE.getName()))
+            .select(BLOG_REQUEST.BLOG_REQUEST_ID, BLOG_REQUEST.SUMMARIZE)
             .from(table(BLOG_REQUEST.getName()))
             .where(BLOG_REQUEST.CREATE_USER.eq(user))
             .fetchInto(BlogSummarizeRow.class);

@@ -52,7 +52,6 @@ public class BlogController {
         return ResponseEntity.ok(blogSummarizeResponse);
     }
 
-
     /**
      * Returns blog summarize list based on login user.
      *

@@ -24,6 +24,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BlogSummarizeServiceTest {
 
+    private static final String MOCK_USER = "some-user-value";
+    private static final String MOCK_BLOG_URL = "some-url-value";
+    private static final String MOCK_BLOG_ARTICLE = "some-text-value";
+    private static final String MOCK_BLOG_SUMMARIZE = "some-summarize-value";
     @Mock
     private BlogAIServiceImpl blogAIService;
     @Mock
@@ -32,13 +36,7 @@ class BlogSummarizeServiceTest {
     private BlogRequestContentMapper blogRequestContentMapper;
     @Mock
     private DSLContext dslContext;
-
     private BlogSummarizeService blogSummarizeService;
-
-    private static final String MOCK_USER = "some-user-value";
-    private static final String MOCK_BLOG_URL = "some-url-value";
-    private static final String MOCK_BLOG_ARTICLE = "some-text-value";
-    private static final String MOCK_BLOG_SUMMARIZE = "some-summarize-value";
 
     @BeforeEach
     void setUp() {
