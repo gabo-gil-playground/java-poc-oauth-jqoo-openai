@@ -27,11 +27,12 @@ public class BlogSummarizeService {
     private final DSLContext dslContext;
 
     /**
+     * Constructor
      *
-     * @param blogAIService
-     * @param blogRequestMapper
-     * @param blogRequestContentMapper
-     * @param dslContext
+     * @param blogAIService            {@link BlogAIServiceImpl}
+     * @param blogRequestMapper        {@link BlogRequestMapper}
+     * @param blogRequestContentMapper {@link BlogRequestContentMapper}
+     * @param dslContext               {@link DSLContext}
      */
     public BlogSummarizeService(final BlogAIServiceImpl blogAIService, final BlogRequestMapper blogRequestMapper, final BlogRequestContentMapper blogRequestContentMapper, final DSLContext dslContext) {
         this.blogAIService = blogAIService;
@@ -41,10 +42,11 @@ public class BlogSummarizeService {
     }
 
     /**
+     * Creates blog summarize text
      *
-     * @param user
-     * @param blogSummarizeRequests
-     * @return
+     * @param user                  the {@link String} user in session
+     * @param blogSummarizeRequests the {@link List<BlogSummarizeRequest>} list of texts to summarize
+     * @return {@link BlogSummarizeResponse}
      */
     public BlogSummarizeResponse createBlogSummarize(final String user, final List<BlogSummarizeRequest> blogSummarizeRequests) {
         log.info("createBlogSummarize - start");
@@ -59,9 +61,10 @@ public class BlogSummarizeService {
     }
 
     /**
+     * Gets blog summarize text list based on user in session
      *
-     * @param user
-     * @return
+     * @param user the {@link String} user in session
+     * @return {@link List<BlogSummarizeRow>}
      */
     public List<BlogSummarizeRow> getBlogSummarizeList(final String user) {
         log.info("getBlogSummarizeList - start");
@@ -78,9 +81,10 @@ public class BlogSummarizeService {
     }
 
     /**
+     * Saves the summarize request list
      *
-     * @param user
-     * @param blogSummarizeRequests
+     * @param user                  the {@link String} user in session
+     * @param blogSummarizeRequests the {@link List<BlogSummarizeRequest>} list of texts to summarize
      */
     private Long saveRequest(final String user, final List<BlogSummarizeRequest> blogSummarizeRequests) {
         log.debug("saveRequest - start");
@@ -96,9 +100,10 @@ public class BlogSummarizeService {
     }
 
     /**
+     * Saves the summarize response text and id
      *
-     * @param requestId
-     * @param summarize
+     * @param requestId {@link Long} request id
+     * @param summarize {@link String} summarize text
      */
     private void saveResponse(final Long requestId, final String summarize) {
         log.debug("saveResponse - start");

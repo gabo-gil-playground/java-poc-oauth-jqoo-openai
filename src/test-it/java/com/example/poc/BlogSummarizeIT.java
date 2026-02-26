@@ -39,6 +39,9 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * Blog Summarize flow integration test cases
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
 public class BlogSummarizeIT {
@@ -48,31 +51,23 @@ public class BlogSummarizeIT {
     private static final String MOCK_JWT_CLAIM_SUB_VALUE = "john.doe";
     private static final String MOCK_JWT_HEADER_KEY = "alg";
     private static final String MOCK_JWT_HEADER_VALUE = "none";
+
     private static final String MOCK_BLOG_SUMMARIZE_ONE = "some-summarize-one-value";
     private static final String MOCK_BLOG_SUMMARIZE_TWO = "some-summarize-two-value";
+
     @Autowired
     private WebApplicationContext webApplicationContext;
+
     @Autowired
     private DSLContext dslContext;
+
     @MockitoBean
     private JwtDecoder jwtDecoder;
+
     @MockitoBean
     private ChatModel chatModel;
-    private RestTestClient restTestClient;
 
-    /**
-     * Generates valid input tests cases values
-     *
-     * @return {@link Stream <Arguments>}
-     */
-    private static Stream<Arguments> validCreateBlogSummarizeInputTestCases() {
-        return Stream.of(
-            arguments("", ""),
-            arguments("http://some-url.xyz", ""),
-            arguments("", "some article text"),
-            arguments("http://some-url.xyz", "some article text")
-        );
-    }
+    private RestTestClient restTestClient;
 
     @BeforeEach
     void setUp() {
@@ -172,5 +167,19 @@ public class BlogSummarizeIT {
 
         JwtAuthenticationToken authentication = new JwtAuthenticationToken(jwt);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    /**
+     * Generates valid input tests cases values
+     *
+     * @return {@link Stream <Arguments>}
+     */
+    private static Stream<Arguments> validCreateBlogSummarizeInputTestCases() {
+        return Stream.of(
+            arguments("", ""),
+            arguments("http://some-url.xyz", ""),
+            arguments("", "some article text"),
+            arguments("http://some-url.xyz", "some article text")
+        );
     }
 }

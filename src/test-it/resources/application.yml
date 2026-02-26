@@ -3,7 +3,7 @@ spring:
     url: 'jdbc:sqlite::memory:'
     driver-class-name: org.sqlite.JDBC
     username: sa
-    password: ""
+    password: ''
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
@@ -15,7 +15,7 @@ spring:
 
   ai:
     openai:
-      api-key: "mock-key-for-it-tests"
+      api-key: 'mock-key-for-it-tests'
       chat:
         enabled: true
 

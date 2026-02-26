@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- *
+ * Blog AI service
  */
 @Service
 @Slf4j
@@ -23,8 +23,8 @@ public class BlogAIServiceImpl implements BlogAIService {
     private final ChatModel chatModel;
 
     /**
-     *
-     * @param chatModel
+     * Constructor
+     * @param chatModel {@link ChatModel} open-ai chat model
      */
     public BlogAIServiceImpl(final ChatModel chatModel) {
         this.chatModel = chatModel;
@@ -66,9 +66,10 @@ public class BlogAIServiceImpl implements BlogAIService {
     }
 
     /**
+     * Gets text from chat response. If the text can not be extracted, returns an empty text warning message
      *
-     * @param chatResponse
-     * @return
+     * @param chatResponse {@link ChatResponse} the open-ai chat response
+     * @return {@link String} chat response text message
      */
     private String getTextFromChatResponse(final ChatResponse chatResponse) {
         try {

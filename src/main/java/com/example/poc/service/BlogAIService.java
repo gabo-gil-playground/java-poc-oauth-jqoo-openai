@@ -3,7 +3,7 @@ package com.example.poc.service;
 import java.util.List;
 
 /**
- *
+ * Blog AI service interface
  */
 public interface BlogAIService {
 

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Development-only controller that issues signed JWTs for local testing.
  * <p>
- * Protect with profile "dev" so it isn't available in non-dev environments.
+ * Protect with profile so it isn't available in non-dev environments.
  * The endpoint returns a JSON object similar to an OAuth2 token response.
  * <p>
  * IMPORTANT: provided just for local testing and POC purposes only. For production, tokens should be issued by a
