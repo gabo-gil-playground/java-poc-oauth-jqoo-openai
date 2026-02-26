@@ -29,7 +29,7 @@ public final class JwtTokenService {
      *
      * @param jwkService the {@link JwkService}
      */
-    public JwtTokenService(JwkService jwkService) {
+    public JwtTokenService(final JwkService jwkService) {
         this.jwkService = jwkService;
     }
 
@@ -41,7 +41,7 @@ public final class JwtTokenService {
      * @return {@link String} compact serialized JWT
      * @throws Exception when signing fails
      */
-    public String generateToken(String subject, String scopes) throws Exception {
+    public String generateToken(final String subject, final String scopes) throws Exception {
         var rsaKey = jwkService.getRsaJwk();
         JWSSigner signer = new RSASSASigner(rsaKey.toPrivateKey());
 

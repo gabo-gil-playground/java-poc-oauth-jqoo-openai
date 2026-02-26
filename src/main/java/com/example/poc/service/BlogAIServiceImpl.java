@@ -56,6 +56,7 @@ public class BlogAIServiceImpl implements BlogAIService {
             .chatOptions(openAiChatOptions)
             .build();
 
+        // just for POC purposes - in a real environment it should handle errors and retry logic
         ChatResponse chatResponse = chatModel.call(prompt);
         String textResponse = getTextFromChatResponse(chatResponse);
 
@@ -80,7 +81,7 @@ public class BlogAIServiceImpl implements BlogAIService {
 
             return chatResponse.getResult().getOutput().getText();
         } catch (Exception e) {
-            log.error("getTextFromChatResponse - get response text error: {:?}", e);
+            log.error("getTextFromChatResponse - get response text error: ", e);
             return Constants.OPENAI_OUTPUT_EMPTY_RESPONSE; // just for POC purposes - avoid silent handling for real product
         }
     }
