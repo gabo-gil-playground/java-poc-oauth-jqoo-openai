@@ -1,14 +1,13 @@
 # java-poc-oauth-jooq-openai
+## Overview
+Basic Java project skeleton with Gradle, Java 25 and Spring Boot 4.0.3. Pre-configured with:
 
-Basic Java project skeleton with Gradle, Java 25, and Spring Boot 4.0.3, pre-configured with:
-
-- Spring Web (MVC) and WebFlux (Asynchronous WebClient)
-- Persistence with MyBatis and jOOQ
 - OAuth2 Security: Resource Server with local JWKS and Token generation (for testing)
 - OpenAI Integration via Spring AI (2.0.0-M2)
-- Lombok support
-- Configuration for Virtual Threads, lazy initialization, and graceful shutdown
-- Comprehensive testing suite including Unit and Integration Tests (test-it)
+- Spring Web (MVC) and WebFlux (Asynchronous WebClient)
+- Persistence with MyBatis and jOOQ
+- Configuration for Virtual Threads and graceful shutdown
+- Comprehensive testing suite including Unit (test) and Integration Tests (test-it)
 
 ## Requirements
 
@@ -18,11 +17,15 @@ Basic Java project skeleton with Gradle, Java 25, and Spring Boot 4.0.3, pre-con
 
 ## Project Structure
 
-- `build.gradle`: plugins, dependencies, and configuration definitions (includes jOOQ code generation task)
-- `settings.gradle`: project name
-- `src/main/java/com/example/poc/Application.java`: main bootstrap class
-- `src/main/resources/application.yml`: Configuration for server, logging, security, AI, datasource, MyBatis, and jOOQ
-- `src/main/java/com/example/poc/controller/`: New controllers added:
+- `build.gradle`: plugins, dependencies and configuration definitions (includes jOOQ code generation task)
+- `src/main/java/com/example/poc/Application.java`: main Spring Boot class
+- `src/main/resources/application.yml`: Configuration for:
+  - server
+  - logging
+  - security
+  - AI
+  - datasource + MyBatis + jOOQ
+- `src/main/java/com/example/poc/controller/`:
     - `BlogController`: Main API for blog summarization.
     - `HealthController`: Application health status.
     - `JwksController`: Exposes JWK Set for local JWT verification.
@@ -35,7 +38,6 @@ Basic Java project skeleton with Gradle, Java 25, and Spring Boot 4.0.3, pre-con
 - `org.springframework.boot:spring-boot-starter-jooq` (jOOQ 3.19.30)
 - `org.springframework.boot:spring-boot-starter-oauth2-resource-server`
 - `org.springframework.ai:spring-ai-starter-model-openai:2.0.0-M2`
-- `org.projectlombok:lombok`
 
 ## Logic Details: Blog Summarization
 
@@ -77,7 +79,7 @@ spring:
     password: secret
 ```
 
-For jOOQ, a generation configuration is provided in `build.gradle`. Ensure environment variables (`POSTGRES_URL`, etc.) are set or use defaults, then run:
+For jOOQ the generation configuration is provided in `build.gradle`. Ensure environment variables (`POSTGRES_URL`, etc.) are set or use defaults, then run:
 
 ```bash
 ./gradlew generateJooq
