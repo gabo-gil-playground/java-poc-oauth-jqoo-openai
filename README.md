@@ -113,8 +113,45 @@ The project includes both unit and integration tests:
 - `GET /health`: Check application status.
 - `GET /.well-known/jwks.json`: Get the public keys for JWT verification.
 - `POST /token/generate`: Generate a JWT for testing.
-- `POST /api/v1/blog/summarize`: Create a new summary.
-- `GET /api/v1/blog/summarize`: List existing summaries.
+- `POST /api/v1/blog/summarize`: Create a new summary (by User in Session).
+- `GET /api/v1/blog/summarize`: List existing summaries (filtered by User in Session).
+
+#### Token generate example
+```
+curl --request POST \
+  --url http://localhost:9025/token/generate \
+  --header 'Content-Type: application/json' \
+  --cookie JSESSIONID=568977AA683E996D7A539F7F9F38A8AB \
+  --data '{"subject":"client1","scopes":"read"}'
+```
+#### Post Summarize example
+```
+curl --request POST \
+  --url http://localhost:9025/api/v1/blog/summarize \
+  --header 'Authorization: Bearer [TOKEN_RESPONSE_VALUE_FROM_GENERATE_ENDPOINT]' \
+  --header 'Content-Type: application/json' \
+  --data '[
+  {
+    "url": "https://gabogil.com/2026/02/16/the-state-of-rust-ecosystem-the-rustrover-blog/",
+    "article": "In 2025, the Rust ecosystem has transitioned from a niche experimental language into a mature industry standard defined by professional adoption and rapid growth. While a significant portion of the community still explores Rust through hobby projects, over 26% of developers now utilize it in professional environments, reflecting a shift toward long-term stability. This momentum is fueled by a constant influx of newcomers—30% of whom started within the last month—and a notable migration of teams from legacy C and C++ projects who find that the learning curve is no longer the “vertical” obstacle it once was."
+  },
+  {
+    "url": "https://gabogil.com/2026/01/31/mastering-focus-why-your-brain-hates-multitasking/",
+    "article": "Neuroscience confirms the prefrontal cortex is a single threaded processor. Rubinstein, Meyer & Evans (2001) measured a 20% drop in task efficiency each time knowledge workers switch contexts. Csikszentmihalyis flow research (1990) shows deep work blocks of 60–90 minutes triple creative output compared to fragmented schedules."
+  },
+  {
+    "url": "https://gabogil.com/2025/12/01/adapting-to-spring-boot-4-and-framework-7-0-a-new-enterprise-baseline/",
+    "article": "In mid-November 2025, the Spring team delivered Framework 7.0 and Boot 4.0 as the next generation of its flagship platform. These releases pivot the ecosystem to require Java 25, integrate GraalVM native-image improvements, and overhaul core modules for reactive and cloud-native patterns. Over 30% of Fortune 500 back-end Java systems run on Spring; this transition is not incremental. Companies must balance the promised performance gains—benchmarks show up to 20% lower CPU use on virtual-thread workloads—against the cost of upgrading core libraries and retraining teams on new idioms."
+  }
+]'
+```
+#### Get Summarize example
+```
+curl --request GET \
+  --url http://localhost:9025/api/v1/blog/summarize \
+  --header 'Authorization: Bearer [TOKEN_RESPONSE_VALUE_FROM_GENERATE_ENDPOINT]' \
+  --header 'Content-Type: application/json'
+```
 
 ## Virtual Threads and Optimization
 
